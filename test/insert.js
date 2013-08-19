@@ -11,12 +11,15 @@ var connInfo;
 switch (process.env.NODE_ENV) {
     case 'development':
         connInfo = Config.config.connInfo.development;
+        break;
 
     case 'production':
         connInfo = Config.config.connInfo.production;
+        break;
 
     default:
         connInfo = Config.config.connInfo.development;
+        break;
 }
 
 var connectData = {
