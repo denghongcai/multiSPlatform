@@ -1,11 +1,12 @@
 {
-  "name": "multiSPlatform",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "start": "node app.js"
-  },
-  "dependencies": {
-    "oracle": "*"
-  }
+    "name": "multiSPlatform",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "oracle": "*",
+        "generic-pool": "*"
+    }
 }
