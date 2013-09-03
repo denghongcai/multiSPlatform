@@ -10,7 +10,9 @@ lib-cov
 pids
 logs
 results
-node_modules
+node_modules/generic-pool
+node_modules/mysql
+node_modules/oracle
 .idea
 
 npm-debug.log
