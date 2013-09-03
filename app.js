@@ -191,6 +191,32 @@ var oracleData = function(callback){
                     for(var key in results){
                         callback(results[key]['msgsid'], results[key]['flag']);
                     }
+                    pool.acquire(function (err, connection) {
+                        if (err)
+                            console.log(err);
+                        else {
+                            connection.execute('UPDATE "mt" SET "flag"=8 WHERE "flag" =6', [], function (err, results) {
+                                if (err)
+                                    console.log(err);
+                                else {
+                                    pool.release(connection);
+                                    pool.acquire(function (err, connection) {
+                                        if (err)
+                                            console.log(err);
+                                        else {
+                                            connection.execute('UPDATE "mt" SET "flag"=9 WHERE "flag" =7', [], function (err, results) {
+                                                if (err)
+                                                    console.log(err);
+                                                else {
+                                                    pool.release(connection);
+                                                }
+                                            });
+                                        }
+                                    })
+                                }
+                            });
+                        }
+                    })
                 }
             });
         }
