@@ -4,8 +4,25 @@
 
 var net = require('net');
 var smg = require('../model/smg');
+var Pool = require('generic-pool');
 
-var client = new net.Socket();
+var pool = Pool.Pool({
+    name: 'socket',
+    max: 10,
+    create: function (callback) {
+        var client = net.connect({
+            host: "127.0.0.1",
+            port: 9000
+        }, function(){
+            callback(0, client);
+        });
+    },
+    destroy: function (connection) {
+        connection.end();
+    },
+    log: false
+});
+
 
 var server = net.createServer(function (c) { //'connection' listener
     console.log('server connected');
@@ -14,15 +31,15 @@ var server = net.createServer(function (c) { //'connection' listener
     });
     c.on('data', function (data) {
         console.log('DATA: ' + data);
-        if (data.toString().indexOf("end\n") != -1) {
-            client.connect({
-                host: "127.0.0.1",
-                port: 9000
-            }, function () {
+        pool.acquire(function(err, client){
+            if(err){
+                console.log(err);
+            }
+            else{
                 client.write("OK");
-                client.destroy();
-            });
-        }
+                pool.release(client);
+            }
+        });
     });
 });
 server.listen(8181, function () { //'listening' listener

@@ -2,50 +2,9 @@
  * Author: dhc
  */
 
-var Oracle = require("oracle");
-var Config = require("../config");
-var Generic_pool = require("generic-pool");
+var Pool = require("../pool");
 
-var connInfo;
-
-switch (process.env.NODE_ENV) {
-    case 'development':
-        connInfo = Config.config.connInfo.development;
-        break;
-
-    case 'production':
-        connInfo = Config.config.connInfo.production;
-        break;
-
-    default:
-        connInfo = Config.config.connInfo.development;
-        break;
-}
-
-var connectData = {
-    tns: '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=' + connInfo.host +
-        ')(PORT=' + connInfo.port + '))(CONNECT_DATA=(SID=ORCL)))',
-    user: connInfo.username,
-    password: connInfo.pass
-};
-
-//oracle连接池
-var pool = Generic_pool.Pool({
-    name: 'oracle',
-    max: connInfo.process,
-    create: function (callback) {
-        Oracle.connect(connectData, function (err, connection) {
-            callback(err, connection);
-        });
-    },
-    destroy: function (connection) {
-        connection.close();
-    },
-    validate: function (connection) {
-        return connection.isConnected();
-    },
-    log: false
-});
+var pool = new Pool();
 
 var modelInsert = function (sql, callback) {
     pool.acquire(function (err, connection) {
@@ -73,7 +32,7 @@ var forInsert = function (start, end, step) {
         (function () {
             var sql = "INSERT ALL";
             for (i = start; i < start + step; i++) {
-                sql = sql + ' INTO "mt" VALUES(' + i + ',0 ,0, 13545107112,0 ,0) ';
+                sql = sql + ' INTO "mt" VALUES(0, 0, 0, 13545107112, 0, 0, ' + i + ') ';
             }
             sql = sql + 'SELECT * FROM dual';
             modelInsert(sql, function () {

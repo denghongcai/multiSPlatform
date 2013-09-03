@@ -7,17 +7,18 @@ var Config = require('../config');
 
 var callbackArray = new Array();
 
-module.exports = function(callback){
+module.exports = function (callback) {
     var localserver = Net.createServer(function (c) { //'connection' listener
         console.log('server connected');
         c.on('end', function () {
             console.log('server disconnected');
         });
-        c.on('data', function(data){
-            console.log('DATA: '+data);
+        c.on('data', function (data) {
+            console.log('DATA: ' + data);
+            callback(data.toString().split(":")[0], 3);
         });
     });
     localserver.listen(Config.config.callbackPort, function () {
-        console.log('Callback server listen on '+Config.config.callbackPort);
+        console.log('Callback server listen on ' + Config.config.callbackPort);
     });
 };

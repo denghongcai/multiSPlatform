@@ -9,10 +9,7 @@ exports.CMPP = function(sms){
     var client = new net.Socket();
     client.connect(config.CMPP, function(){
         console.log('CONNECTED TO: ' + config.CMPP.host + ':' + config.CMPP.port);
-        for(var key in sms) {
-            client.write(key+"\n");
-        }
-        client.write("end\n");
+        client.write(sms.msgsid+':'+sms.pnumber+':'+'content'+'\n');
         client.destroy();
     });
 };
