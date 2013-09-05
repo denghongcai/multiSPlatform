@@ -4,14 +4,14 @@
 
 var soap = require('soap');
 var parseString = require('xml2js').parseString;
-var url = 'http://218.106.126.38:8000/sxt/services/SxtServiceFacede?wsdl';
+var url = 'http://192.168.2.18:8000/sxt/services/SxtServiceFacede?wsdl';
 var auth = {
     name: 'x070',
     pwd: 'xf123456'
 }
 
 exports.sendMsg = function (data) {
-    soap.createClient(url, {endpoint: "http://218.106.126.38:8000/sxt/services/SxtServiceFacede"}, function (err, client) {
+    soap.createClient(url, {endpoint: "http://192.168.2.18:8000/sxt/services/SxtServiceFacede"}, function (err, client) {
         if (err)
             console.log(err);
         else {
@@ -34,15 +34,17 @@ exports.sendMsg = function (data) {
                     console.log(err);
                     console.log(client.lastRequest);
                 }
-                else
+                else{
                     console.log(result);
+		    console.log(client.lastRequest);
+		}
             })
         }
     });
 }
 
 exports.getServerCallback = function (MOcallback, REPORTcallback) {
-    soap.createClient(url, {endpoint: "http://218.106.126.38:8000/sxt/services/SxtServiceFacede"}, function (err, client) {
+    soap.createClient(url, {endpoint: "http://192.168.2.18:8000/sxt/services/SxtServiceFacede"}, function (err, client) {
         if (err)
             console.log(err);
         else {

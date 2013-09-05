@@ -9,6 +9,7 @@ var pool = new Pool();
 
 var smsInsert = function (rows, content) {
     console.log(rows);
+    console.log(content);
     var csid;
     var sql = "INSERT ALL";
     for (var item in rows) {
@@ -35,6 +36,7 @@ var smsInsert = function (rows, content) {
         if (err)
             console.log(err + 'smsinsert');
         else {
+            console.log('INSERT INTO "msgtext" VALUES(' + csid + ', ' + "'" + content + "'" + ')');
             connection.execute('INSERT INTO "msgtext" VALUES(' + csid + ', ' + "'" + content + "'" + ')',
                 [], function (err, results) {
                     if (err)
@@ -91,14 +93,15 @@ var smsFlag = function (flag, results, callback) {
 
 var smsReport = function (resp, status) {
     var tmp;
+    console.log(resp);
     for (var key in resp) {
         tmp = resp[key].split('#');
         pool.acquire(function (err, connection) {
             if (err)
                 console.log(err);
             else {
-                connection.execute('UPDATE "mt" SET "flag" = ' + status + ' WHERE ' +
-                    '"pnumber" =' + tmp[1] + 'AND "flag" < ' + (tmp[2] + 3), [], function (err, updateresults) {
+                connection.execute('UPDATE "mt" SET "flag" = ' + (parseInt(tmp[2]) + 3) + ' WHERE ' +
+                    '"pnumber" =' + tmp[1] + ' AND "flag" < ' + (parseInt(tmp[2]) + 3), [], function (err, updateresults) {
                     if (err)
                         console.log(err);
                     else {
@@ -114,17 +117,17 @@ var smsReport = function (resp, status) {
 var smsRouter = function (results) {
     var smsForCMPP = {
         content: '',
-        gatetype: 1,
+        gatetype: '1',
         number: []
     };
     var smsForSGIP = {
         content: '',
-        gatetype: 2,
+        gatetype: '0',
         number: []
     };
     var smsForSMGP = {
         content: '',
-        gatetype: 3,
+        gatetype: '2',
         number: []
     };
     var content = '';
@@ -171,9 +174,11 @@ var smsRouter = function (results) {
         Webservice.sendMsg(smsForCMPP);
     }
     if (smsForSGIP.number.length != 0) {
+	console.log(smsForSGIP);
         Webservice.sendMsg(smsForSGIP);
     }
     if (smsForSMGP.number.length != 0) {
+	console.log(smsForSMGP);
         Webservice.sendMsg(smsForSMGP);
     }
 };
@@ -188,8 +193,9 @@ var oracleData = function(callback){
                     console.log(err);
                 else {
                     pool.release(connection);
+	            console.log(results);
                     for(var key in results){
-                        callback(results[key]['msgsid'], results[key]['flag']);
+                        callback(results[key]['msgid'], results[key]['flag']);
                     }
                     pool.acquire(function (err, connection) {
                         if (err)
@@ -210,7 +216,7 @@ var oracleData = function(callback){
                                                 else {
                                                     pool.release(connection);
                                                 }
-                                            });
+                                            })
                                         }
                                     })
                                 }
