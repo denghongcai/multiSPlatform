@@ -4,12 +4,14 @@ var Smg = require("./model/smg");
 var Callbackserver = require('./model/callbackserver');
 var Mysqlproxy = require('./model/mysqlproxy');
 var Webservice = require('./model/webservice');
+var Utf8 = require('utf8');
 
 var pool = new Pool();
 
 var smsInsert = function (rows, content) {
     console.log(rows);
     console.log(content);
+    content = Utf8.encode(content.trim());
     var csid;
     var sql = "INSERT ALL";
     for (var item in rows) {
