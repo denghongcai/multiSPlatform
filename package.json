@@ -7,6 +7,7 @@
     },
     "dependencies": {
         "oracle": "*",
-        "generic-pool": "*"
+        "generic-pool": "*",
+	"utf8": "*"
     }
 }
