@@ -103,7 +103,7 @@ var smsReport = function (resp, status) {
                 console.log(err);
             else {
                 connection.execute('UPDATE "mt" SET "flag" = ' + (parseInt(tmp[2]) + 3) + ' WHERE ' +
-                    '"pnumber" =' + tmp[1] + ' AND "flag" < ' + (parseInt(tmp[2]) + 3), [], function (err, updateresults) {
+                    '"pnumber" =' + tmp[1] + ' AND "flag" < ' + (parseInt(tmp[2]) + 3 +' limit 1'), [], function (err, updateresults) {
                     if (err)
                         console.log(err);
                     else {
@@ -172,15 +172,12 @@ var smsRouter = function (results) {
         smsForSMGP.content = content;
     }
     if (smsForCMPP.number.length != 0) {
-        console.log(smsForCMPP);
         Webservice.sendMsg(smsForCMPP);
     }
     if (smsForSGIP.number.length != 0) {
-	console.log(smsForSGIP);
         Webservice.sendMsg(smsForSGIP);
     }
     if (smsForSMGP.number.length != 0) {
-	console.log(smsForSMGP);
         Webservice.sendMsg(smsForSMGP);
     }
 };

@@ -10,7 +10,9 @@ var auth = {
     pwd: 'xf123456'
 }
 
-exports.sendMsg = function (data) {
+exports.sendMsg = function (msgdata) {
+    var data = JSON.parse(JSON.stringify(msgdata));
+    console.log(data);
     soap.createClient(url, {endpoint: "http://192.168.2.18:8000/sxt/services/SxtServiceFacede"}, function (err, client) {
         if (err)
             console.log(err);
@@ -32,11 +34,10 @@ exports.sendMsg = function (data) {
             }, function (err, result) {
                 if (err) {
                     console.log(err);
-                    console.log(client.lastRequest);
                 }
                 else{
                     console.log(result);
-		    console.log(client.lastRequest);
+	 	    console.log(client.lastRequest);
 		}
             })
         }

@@ -15,14 +15,7 @@ exports.makeSMSTask = function (callback) {
 			console.log(rows[item]);
                         var csid = rows[item]['csid'];
                         var content = rows[item]['content'];
-                        connection.query('UPDATE mtcontent SET flag=4 WHERE csid=' + csid, function () {
-                            connection.query('SELECT * FROM smsmt WHERE csid=' + csid, function (err, otrows) {
-                                connection.query('UPDATE smsmt SET flag=4 WHERE csid=' + csid, function () {
-                                    callback(otrows, content);
-                                    connection.release();
-                                });
-                            });
-                        });
+			SyncTask(connection, csid, content,callback);
                     }
                 }
                 else {
@@ -42,4 +35,15 @@ exports.dbSync = function (sid, flag) {
             });
         })
     });
+}
+
+SyncTask = function(connection, csid, content, callback){
+    connection.query('SELECT * FROM smsmt WHERE csid=' + csid, function (err, otrows) {
+                            connection.query('UPDATE smsmt SET flag=4 WHERE csid=' + csid, function () {
+                                callback(otrows, content);
+                                connection.query('UPDATE mtcontent SET flag=4 WHERE csid=' + csid);
+                                connection.release();
+                            });
+                        });
+	
 }
